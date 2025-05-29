@@ -43,7 +43,7 @@ export default {
     },
     recentNotes: {
       title: "最近的笔记",
-      seeRemainingMore: ({ remaining }) => `查看更多${remaining}篇笔记 →`,
+      seeRemainingMore: ({ remaining }) => `查看更多 →`,
     },
     transcludes: {
       transcludeOf: ({ targetSlug }) => `包含${targetSlug}`,

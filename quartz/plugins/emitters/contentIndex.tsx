@@ -101,7 +101,10 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
       const linkIndex: ContentIndexMap = new Map()
       for (const [tree, file] of content) {
         const slug = file.data.slug!
-        const date = getDate(ctx.cfg.configuration, file.data) ?? new Date()
+        let date = new Date()
+        if (file.data.frontmatter != undefined && file.data.frontmatter.date != undefined) {
+          date = new Date(file.data.frontmatter.date)
+        }
         if (opts?.includeEmptyFiles || (file.data.text && file.data.text !== "")) {
           linkIndex.set(slug, {
             slug,
@@ -144,7 +147,6 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
           // actually uses it. we only keep it in the index as we need it
           // for the RSS feed
           delete content.description
-          delete content.date
           return [slug, content]
         }),
       )

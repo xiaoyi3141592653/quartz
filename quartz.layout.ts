@@ -6,12 +6,7 @@ export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
   afterBody: [],
-  footer: Component.Footer({
-    links: {
-      GitHub: "https://github.com/jackyzha0/quartz",
-      "Discord Community": "https://discord.gg/cRFFHYye7t",
-    },
-  }),
+  footer: Component.Footer(),
 }
 
 // components for pages that display a single page (e.g. a single note)
@@ -38,13 +33,47 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer(
+      {
+        mapFn: (node) => {
+          if (node.isFolder) {
+            node.displayName = "📁 " + node.displayName
+          } else {
+            if (node.displayName == "最近更新") {
+              node.displayName = "🔥 最近更新"
+            } else {
+              node.displayName = "📄 " + node.displayName
+            }
+          }
+        },
+        sortFn: (a, b) => {
+          if ((!a.isFolder && !b.isFolder) || (a.isFolder && b.isFolder)) {
+            if (a.filePath == "最近更新.md") {
+              return -1
+            }
+            if (a.data.date && b.data.date) {
+              return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+            }
+            return a.displayName.localeCompare(b.displayName, undefined, {
+              numeric: true,
+              sensitivity: "base",
+            })
+          }
+
+          if (!a.isFolder && b.isFolder) {
+            return 1
+          } else {
+            return -1
+          }
+        },
+      }
+    ),
   ],
   right: [
     Component.Graph(),
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(),
-  ],
+  ]
 }
 
 // components for pages that display lists of pages  (e.g. tags or folders)
@@ -62,7 +91,41 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer(
+      {
+        mapFn: (node) => {
+          if (node.isFolder) {
+            node.displayName = "📁 " + node.displayName
+          } else {
+            if (node.displayName == "最近更新") {
+              node.displayName = "🔥 最近更新"
+            } else {
+              node.displayName = "📄 " + node.displayName
+            }
+          }
+        },
+        sortFn: (a, b) => {
+          if ((!a.isFolder && !b.isFolder) || (a.isFolder && b.isFolder)) {
+            if (a.filePath == "最近更新.md") {
+              return -1
+            }
+            if (a.data.date && b.data.date) {
+              return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+            }
+            return a.displayName.localeCompare(b.displayName, undefined, {
+              numeric: true,
+              sensitivity: "base",
+            })
+          }
+
+          if (!a.isFolder && b.isFolder) {
+            return 1
+          } else {
+            return -1
+          }
+        },
+      }
+    ),
   ],
-  right: [],
+  right: []
 }
