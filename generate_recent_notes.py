@@ -91,12 +91,17 @@ def generate_note_index(vault_path, output_file="最近更新.md"):
         f.write("title: 最近更新\n")
         f.write("date: {}\n".format(datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')))
         f.write("---\n")
-
+        idx = 0
+        max_cnt = 10
         for note in note_data:
             # 使用Obsidian内部链接格式[[文件名]]
             if note['title'] != "首页":
                 f.write(f"- **[{note['date'].strftime('%Y-%m-%d %H:%M')}]** ")
                 f.write(f"[[{note['path']}|{note['title']}]]\n")
+            idx += 1
+            if idx >= max_cnt:
+                f.write(f"\n\n> 只显示最近{max_cnt}条笔记，更多请查看目录。\n")
+                break
     
     print(f"成功生成索引文件: {vault_path/output_file}")
     print(f"共索引笔记数量: {len(note_data)}")
