@@ -1,12 +1,51 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
-
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
   afterBody: [],
   footer: Component.Footer(),
+}
+
+export const sortFn: Options["sortFn"] = (a, b) => {
+  if ((!a.isFolder && !b.isFolder) || (a.isFolder && b.isFolder)) {
+    if (a.filePath == "最近更新.md") {
+      return -1
+    }
+    if (a.data.date && b.data.date) {
+      return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+    }
+    return a.displayName.localeCompare(b.displayName, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  }
+
+  if (!a.isFolder && b.isFolder) {
+    return 1
+  } else {
+    return -1
+  }
+}
+
+export const mapFn: Options["mapFn"] = (node) => {
+  if (node.isFolder) {
+    node.displayName = "📁 " + node.displayName
+  } else {
+    let file_date = new Date(node.data.date ?? Date.now());
+    const year = file_date.getFullYear();
+    const month = String(file_date.getMonth() + 1).padStart(2, '0'); // 月份从0开始需+1
+    const day = String(file_date.getDate()).padStart(2, '0');
+    const hours = String(file_date.getHours()).padStart(2, '0');
+    const minutes = String(file_date.getMinutes()).padStart(2, '0');
+    let display_date =  `${year}-${month}-${day} ${hours}:${minutes}`;
+    if (node.displayName == "最近更新") {
+      node.displayName = `🔥 [${display_date}] 最近更新`
+    } else {
+      node.displayName = `📄 [${display_date}] ${node.displayName}`
+    }
+  }
 }
 
 // components for pages that display a single page (e.g. a single note)
@@ -35,37 +74,8 @@ export const defaultContentPageLayout: PageLayout = {
     }),
     Component.Explorer(
       {
-        mapFn: (node) => {
-          if (node.isFolder) {
-            node.displayName = "📁 " + node.displayName
-          } else {
-            if (node.displayName == "最近更新") {
-              node.displayName = "🔥 最近更新"
-            } else {
-              node.displayName = "📄 " + node.displayName
-            }
-          }
-        },
-        sortFn: (a, b) => {
-          if ((!a.isFolder && !b.isFolder) || (a.isFolder && b.isFolder)) {
-            if (a.filePath == "最近更新.md") {
-              return -1
-            }
-            if (a.data.date && b.data.date) {
-              return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
-            }
-            return a.displayName.localeCompare(b.displayName, undefined, {
-              numeric: true,
-              sensitivity: "base",
-            })
-          }
-
-          if (!a.isFolder && b.isFolder) {
-            return 1
-          } else {
-            return -1
-          }
-        },
+        mapFn,
+        sortFn
       }
     ),
   ],
@@ -93,37 +103,8 @@ export const defaultListPageLayout: PageLayout = {
     }),
     Component.Explorer(
       {
-        mapFn: (node) => {
-          if (node.isFolder) {
-            node.displayName = "📁 " + node.displayName
-          } else {
-            if (node.displayName == "最近更新") {
-              node.displayName = "🔥 最近更新"
-            } else {
-              node.displayName = "📄 " + node.displayName
-            }
-          }
-        },
-        sortFn: (a, b) => {
-          if ((!a.isFolder && !b.isFolder) || (a.isFolder && b.isFolder)) {
-            if (a.filePath == "最近更新.md") {
-              return -1
-            }
-            if (a.data.date && b.data.date) {
-              return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
-            }
-            return a.displayName.localeCompare(b.displayName, undefined, {
-              numeric: true,
-              sensitivity: "base",
-            })
-          }
-
-          if (!a.isFolder && b.isFolder) {
-            return 1
-          } else {
-            return -1
-          }
-        },
+        mapFn,
+        sortFn
       }
     ),
   ],
