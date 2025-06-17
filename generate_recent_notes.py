@@ -89,7 +89,7 @@ def generate_note_index(vault_path, output_file="最近更新.md"):
     with open(vault_path / output_file, 'w', encoding='utf-8') as f:
         f.write("---\n")
         f.write("title: 最近更新\n")
-        f.write("date: {}\n".format(datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')))
+        f.write("date: {}\n".format((datetime.now(timezone.utc) + timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')))
         f.write("---\n")
         idx = 0
         max_cnt = 10
