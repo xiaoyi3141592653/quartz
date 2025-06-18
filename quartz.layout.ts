@@ -10,8 +10,10 @@ export const sharedPageComponents: SharedLayout = {
 
 export const sortFn: Options["sortFn"] = (a, b) => {
   if ((!a.isFolder && !b.isFolder) || (a.isFolder && b.isFolder)) {
-    if (a.filePath == "最近更新.md") {
+    if (a.data.filePath == "最近更新.md") {
       return -1
+    } else if (b.data.filePath == "最近更新.md") {
+      return 1
     }
     if (a.data.date && b.data.date) {
       return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
