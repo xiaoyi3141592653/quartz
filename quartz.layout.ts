@@ -15,8 +15,11 @@ export const sortFn: Options["sortFn"] = (a, b) => {
     } else if (b.data.filePath == "最近更新.md") {
       return 1
     }
+    let compare_date = function(aa, bb) {
+      return new Date(bb.data.date).getTime() - new Date(aa.data.date).getTime();
+    }
     if (a.data.date && b.data.date) {
-      return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+      return compare_date(a, b)
     }
     return a.displayName.localeCompare(b.displayName, undefined, {
       numeric: true,

@@ -150,6 +150,11 @@ function createFolderNode(
   return li
 }
 
+window.__name = (func, name) => {
+    func.displayName = name; // 为函数添加 displayName 属性
+    return func;
+};
+
 async function setupExplorer(currentSlug: FullSlug) {
   const allExplorers = document.querySelectorAll("div.explorer") as NodeListOf<HTMLElement>
 
